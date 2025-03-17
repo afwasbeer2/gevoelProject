@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Test Mart van Hemert</title>
     <style>
         body {
             transition: background-color 0.5s ease;
@@ -35,7 +35,7 @@
         // the link to your model provided by Teachable Machine export panel
         const URL = "./tm-my-image-model/";
 
-        let model, webcam, labelContainer, maxPredictions;
+        let model, webcam, labelContainer, maxPredictions, imgElement;
 
         // Load the image model and setup the webcam
         async function init() {
@@ -55,6 +55,7 @@
             await webcam.setup(); // request access to the webcam
             await webcam.play();
             window.requestAnimationFrame(loop);
+            imgElement = document.getElementById("display-image");
 
             // append elements to the DOM
             document.getElementById("webcam-container").appendChild(webcam.canvas);
