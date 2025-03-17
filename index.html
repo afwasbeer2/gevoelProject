@@ -63,14 +63,15 @@
         }
 
         // run the webcam image through the image model
+
         async function predict() {
             const prediction = await model.predict(webcam.canvas);
             let probabilities = prediction.map(p => p.probability);
 
-            // Kleuren toewijzen aan elke klasse
-            let r = Math.floor(probabilities[0] * 255); // Rood
-            let g = Math.floor(probabilities[1] * 255); // Groen
-            let b = Math.floor(probabilities[2] * 255); // Blauw
+            // Groen en rood wisselen
+            let g = Math.floor(probabilities[0] * 255); // Groen (was eerst Rood)
+            let r = Math.floor(probabilities[1] * 255); // Rood (was eerst Groen)
+            let b = Math.floor(probabilities[2] * 255); // Blauw blijft hetzelfde
 
             document.body.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
 
