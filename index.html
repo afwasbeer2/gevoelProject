@@ -85,13 +85,13 @@
 
             // Afbeelding weergeven afhankelijk van de hoogste klasse boven 80%
             if (probabilities[0] > 0.8) {
-                imgElement.src = "image1.jpg";
+                imgElement.src = "image1.png";
                 imgElement.style.display = "block";
             } else if (probabilities[1] > 0.8) {
                 imgElement.src = "image2.jpg";
                 imgElement.style.display = "block";
             } else if (probabilities[2] > 0.8) {
-                imgElement.src = "image3.jpg";
+                imgElement.src = "image3.png";
                 imgElement.style.display = "block";
             } else {
                 imgElement.style.display = "none"; // Verberg als geen enkele klasse >80% is
