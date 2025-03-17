@@ -5,6 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        body {
+            transition: background-color 0.5s ease;
+        }
+    </style>
 </head>
 
 <body>
@@ -60,10 +65,18 @@
         // run the webcam image through the image model
         async function predict() {
             const prediction = await model.predict(webcam.canvas);
-            if (prediction[0].probability > 0.8) { 
-                document.body.style.backgroundColor = "blue";
-            } else {
-                document.body.style.backgroundColor = "white";
+            let probabilities = prediction.map(p => p.probability);
+
+            // Kleuren toewijzen aan elke klasse
+            let r = Math.floor(probabilities[0] * 255); // Rood
+            let g = Math.floor(probabilities[1] * 255); // Groen
+            let b = Math.floor(probabilities[2] * 255); // Blauw
+
+            document.body.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+
+            for (let i = 0; i < maxPredictions; i++) {
+                labelContainer.childNodes[i].innerHTML =
+                    prediction[i].className + ": " + probabilities[i].toFixed(2);
             }
         }
     </script>
