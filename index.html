@@ -8,6 +8,13 @@
     <style>
         body {
             transition: background-color 0.5s ease;
+            text-align: center;
+        }
+        #display-image {
+            width: 300px;
+            height: 300px;
+            display: none; /* Verborgen totdat een klasse >80% is */
+            margin: 20px auto;
         }
     </style>
 </head>
@@ -17,6 +24,7 @@
     <button type="button" onclick="init()">Start</button>
     <div id="webcam-container"></div>
     <div id="label-container"></div>
+    <img id="display-image" src="" alt="Class Image">
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script
         src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
@@ -69,11 +77,25 @@
             let probabilities = prediction.map(p => p.probability);
 
             // Groen en rood wisselen
-            let g = Math.floor(probabilities[0] * 255); // Groen (was eerst Rood)
-            let r = Math.floor(probabilities[1] * 255); // Rood (was eerst Groen)
+            let g = Math.floor(probabilities[0] * 255); // Groen (was Rood)
+            let r = Math.floor(probabilities[1] * 255); // Rood (was Groen)
             let b = Math.floor(probabilities[2] * 255); // Blauw blijft hetzelfde
 
             document.body.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+
+            // Afbeelding weergeven afhankelijk van de hoogste klasse boven 80%
+            if (probabilities[0] > 0.8) {
+                imgElement.src = "image1.jpg";
+                imgElement.style.display = "block";
+            } else if (probabilities[1] > 0.8) {
+                imgElement.src = "image2.jpg";
+                imgElement.style.display = "block";
+            } else if (probabilities[2] > 0.8) {
+                imgElement.src = "image3.jpg";
+                imgElement.style.display = "block";
+            } else {
+                imgElement.style.display = "none"; // Verberg als geen enkele klasse >80% is
+            }
 
             for (let i = 0; i < maxPredictions; i++) {
                 labelContainer.childNodes[i].innerHTML =
