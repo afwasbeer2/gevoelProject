@@ -7,22 +7,44 @@
     <title>Test Mart van Hemert</title>
     <style>
         body {
-            transition: background-color 1s ease;
-            text-align: center;
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 5em;
-            animation: none;
-            position: relative;
+            position: absolute;
+            inset: 0;
+            display: flex;
+            place-content: center;
+            align-items: center;
+            overflow: hidden;
         }
-        
-        @keyframes pulse {
-            0% { background-color: rgba(255, 0, 0, 0.5); }
-            50% { background-color: rgba(0, 255, 0, 0.5); }
-            100% { background-color: rgba(0, 0, 255, 0.5); }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
-        
-        body.pulse-animation {
-            animation: pulse 2s infinite alternate;
+
+        .gradient {
+            --size: 750px;
+            --speed: 50s;
+            --easing: cubic-bezier(0.8, 0.2, 0.2, 0.8);
+
+            width: var(--size);
+            height: var(--size);
+            filter: blur(calc(var(--size) / 5));
+            background-image: linear-gradient(hsl(222, 84%, 60%), hsl(164, 79%, 71%));
+            animation: rotate var(--speed) var(--easing) alternate infinite;
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+        }
+
+        @media (min-width: 720px) {
+            .gradient {
+                --size: 500px;
+            }
+        }
+
+        * {
+            transition: all 0.5s ease-out;
         }
 
         button {
@@ -31,6 +53,8 @@
             color: white;
             padding: 0.5em 1em;
             border-radius: 10%;
+            position: relative;
+            z-index: 10;
         }
 
         #webcam-container {
@@ -39,6 +63,7 @@
             left: 10px;
             width: 200px;
             height: 200px;
+            z-index: 10;
         }
 
         #label-container {
@@ -48,12 +73,14 @@
             width: 200px;
             text-align: left;
             font-size: 0.3em;
+            z-index: 10;
         }
     </style>
 </head>
 
 <body>
-    <div>Emotie Test Prototype</div>
+    <div class="gradient"></div>
+    <div>abstract versie</div>
     <button type="button" onclick="init()">Start</button>
     <div id="webcam-container"></div>
     <div id="label-container"></div>
@@ -61,7 +88,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
     <script type="text/javascript">
         const URL = "./tm-my-image-model/";
-        let model, webcam, labelContainer, maxPredictions;
+        let model, webcam, labelContainer, maxPredictions, gradient;
 
         async function init() {
             const modelURL = URL + "model.json";
@@ -78,6 +105,8 @@
 
             document.getElementById("webcam-container").appendChild(webcam.canvas);
             labelContainer = document.getElementById("label-container");
+            gradient = document.querySelector(".gradient");
+            
             for (let i = 0; i < maxPredictions; i++) {
                 labelContainer.appendChild(document.createElement("div"));
             }
@@ -95,10 +124,15 @@
             let maxProb = Math.max(...probabilities);
             let index = probabilities.indexOf(maxProb);
 
-            if (maxProb > 0.5) {
-                document.body.classList.add("pulse-animation");
-            } else {
-                document.body.classList.remove("pulse-animation");
+            if (index === 0) { // Blij
+                gradient.style.animationDuration = "60s";
+                gradient.style.backgroundImage = "linear-gradient(hsl(120, 84%, 60%), hsl(164, 79%, 71%))";
+            } else if (index === 1) { // Boos
+                gradient.style.animationDuration = "20s";
+                gradient.style.backgroundImage = "linear-gradient(hsl(0, 84%, 60%), hsl(10, 79%, 71%))";
+            } else if (index === 2) { // Verdrietig
+                gradient.style.animationDuration = "20s";
+                gradient.style.backgroundImage = "linear-gradient(hsl(220, 84%, 60%), hsl(240, 79%, 71%))";
             }
 
             for (let i = 0; i < maxPredictions; i++) {
