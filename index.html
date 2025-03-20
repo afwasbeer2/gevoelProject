@@ -12,6 +12,7 @@
             font-family: Arial, Helvetica, sans-serif;
             font-size: 5em;
             animation: none;
+            position: relative;
         }
         
         @keyframes pulse {
@@ -31,11 +32,19 @@
             padding: 0.5em 1em;
             border-radius: 10%;
         }
+
+        #webcam-container {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 200px;
+            height: 200px;
+        }
     </style>
 </head>
 
 <body>
-    <div>Emotie Test Prototype</div>
+    <div>verdrietig/boos naar blij</div>
     <button type="button" onclick="init()">Start</button>
     <div id="webcam-container"></div>
     <div id="label-container"></div>
@@ -92,3 +101,4 @@
 </body>
 
 </html>
+
