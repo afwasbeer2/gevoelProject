@@ -7,8 +7,8 @@
     <title>Test Mart van Hemert</title>
     <style>
         body {
-            background: #1a1e23;
             margin: 0;
+            background: #1a1e23;
             overflow: hidden;
         }
 
@@ -28,18 +28,18 @@
             height: var(--bubble-radius);
             border-radius: 50%;
             animation: float-up var(--bubble-float-duration) var(--bubble-float-delay) ease-in infinite;
-        }
 
-        .bubble::before {
-            position: absolute;
-            content: '';
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: hsla(183, 94%, 76%, 0.3);
-            border-radius: inherit;
-            animation: sway 5s ease-in-out alternate infinite;
+            &::before {
+                position: absolute;
+                content: '';
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: hsla(183, 94%, 76%, 0.3);
+                border-radius: inherit;
+                animation: var(--bubble-sway-type) var(--bubble-sway-duration) var(--bubble-sway-delay) ease-in-out alternate infinite;
+            }
         }
 
         @keyframes float-up {
@@ -48,44 +48,72 @@
             }
         }
 
-        @keyframes sway {
+        @keyframes sway-left-to-right {
             from {
-                transform: translateX(-10%);
+                transform: translateX(-100%);
             }
+
             to {
-                transform: translateX(10%);
+                transform: translateX(100%);
             }
+        }
+
+        @keyframes sway-right-to-left {
+            from {
+                transform: translateX(100%);
+            }
+
+            to {
+                transform: translateX(-100%);
+            }
+        }
+
+        * {
+            transition: all 0.5s ease-out;
+        }
+
+        #start {
+            font-size: 1em;
+            background-color: black;
+            color: white;
+            padding: 0.5em 1em;
+            border-radius: 10%;
+            position: relative;
+            z-index: 10;
+        }
+
+        #testpage {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        #webcam-container {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 200px;
+            height: 200px;
+            z-index: 10;
+        }
+
+        #label-container {
+            position: absolute;
+            top: 220px;
+            left: 10px;
+            width: 200px;
+            text-align: left;
+            font-size: 1em;
+            z-index: 10;
         }
     </style>
 </head>
 
 <body>
     <div class="bubbles">
-        <script>
-            for (let i = 0; i < 50; i++) {
-                let div = document.createElement("div");
-                div.classList.add("bubble");
-                document.querySelector(".bubbles").appendChild(div);
-            }
-
-            function updateBubbles(emotion) {
-                let bubbles = document.querySelectorAll(".bubble");
-                bubbles.forEach(bubble => {
-                    if (emotion === "blij") {
-                        bubble.style.animationDuration = "12s";
-                        bubble.style.background = "hsla(120, 100%, 50%, 0.3)";
-                    } else if (emotion === "boos") {
-                        bubble.style.animationDuration = "6s";
-                        bubble.style.background = "hsla(0, 100%, 50%, 0.3)";
-                    } else if (emotion === "verdrietig") {
-                        bubble.style.animationDuration = "6s";
-                        bubble.style.background = "hsla(220, 100%, 50%, 0.3)";
-                    }
-                });
-            }
-        </script>
+        <!-- Bubbles will be generated here by JavaScript -->
     </div>
-    <div>Emotie Test Prototype</div>
+
     <button id="start" type="button" onclick="init()">Start</button>
     <button id="testpage" onclick="window.location.href='index.html'">terug</button>
     <div id="webcam-container"></div>
@@ -96,6 +124,16 @@
     <script type="text/javascript">
         const URL = "./tm-my-image-model/";
         let model, webcam, labelContainer, maxPredictions;
+
+        // Bubbles generation
+        function createBubbles(count = 50) {
+            const bubblesContainer = document.querySelector('.bubbles');
+            for (let i = 0; i < count; i++) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+                bubblesContainer.appendChild(bubble);
+            }
+        }
 
         async function init() {
             const modelURL = URL + "model.json";
@@ -112,7 +150,9 @@
 
             document.getElementById("webcam-container").appendChild(webcam.canvas);
             labelContainer = document.getElementById("label-container");
-            
+
+            createBubbles(); // Create bubbles
+
             for (let i = 0; i < maxPredictions; i++) {
                 labelContainer.appendChild(document.createElement("div"));
             }
@@ -130,12 +170,13 @@
             let maxProb = Math.max(...probabilities);
             let index = probabilities.indexOf(maxProb);
 
+            // Adjust bubbles based on emotion
             if (index === 0) { // Blij
-                updateBubbles("blij");
+                changeBubbles('green', 10); // Slow bubbles, green color
             } else if (index === 1) { // Boos
-                updateBubbles("boos");
+                changeBubbles('red', 2); // Fast bubbles, red color
             } else if (index === 2) { // Verdrietig
-                updateBubbles("verdrietig");
+                changeBubbles('blue', 2); // Fast bubbles, blue color
             }
 
             for (let i = 0; i < maxPredictions; i++) {
@@ -143,10 +184,26 @@
                     prediction[i].className + ": " + probabilities[i].toFixed(2);
             }
         }
+
+        function changeBubbles(color, speed) {
+            const bubbles = document.querySelectorAll('.bubble');
+            bubbles.forEach(bubble => {
+                bubble.style.setProperty('--bubble-sway-type', 'sway-left-to-right');
+                bubble.style.setProperty('--bubble-left-offset', `${Math.random() * 100}vw`);
+                bubble.style.setProperty('--bubble-radius', `${Math.random() * 10 + 1}vw`);
+                bubble.style.setProperty('--bubble-float-duration', `${Math.random() * speed + 6}s`);
+                bubble.style.setProperty('--bubble-sway-duration', `${Math.random() * speed + 4}s`);
+                bubble.style.setProperty('--bubble-float-delay', `${Math.random() * 4}s`);
+                bubble.style.setProperty('--bubble-sway-delay', `${Math.random() * 4}s`);
+
+                bubble.style.setProperty('--bubble-color', color); // Color change
+            });
+        }
     </script>
 </body>
 
 </html>
+
 
 
 
