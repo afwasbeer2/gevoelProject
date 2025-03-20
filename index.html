@@ -50,7 +50,7 @@
             transition: all 0.5s ease-out;
         }
 
-        button {
+        #start {
             font-size: 1em;
             background-color: black;
             color: white;
@@ -58,6 +58,12 @@
             border-radius: 10%;
             position: relative;
             z-index: 10;
+        }
+
+        #testpage {
+            position: absolute; 
+            top: 10px; 
+            right: 10px;
         }
 
         #webcam-container {
@@ -84,7 +90,8 @@
 <body>
     <div class="gradient"></div>
     <div>Emotie Test Prototype</div>
-    <button type="button" onclick="init()">Start</button>
+    <button id="start" type="button" onclick="init()">Start</button>
+    <button id="testpage" onclick="window.location.href='test.html'">Ga naar Test</button>
     <div id="webcam-container"></div>
     <div id="label-container"></div>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
