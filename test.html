@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Mart van Hemert</title>
+    <style>
+        body {
+            background: black;
+            color: white;
+            font-size: 2em;
+            position: absolute;
+            inset: 0;
+            display: flex;
+            place-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .wrap {
+            position: relative;
+            height: 100%;
+            width: 100%;
+        }
+
+        .c {
+            position: absolute;
+            height: 400px;
+            width: 0.69444%;
+            margin-top: -400px;
+            animation: drop 4s infinite ease-in;
+        }
+
+        @keyframes drop {
+            80% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate3d(0, 150vh, 0);
+                opacity: 0;
+            }
+        }
+
+        /* Dynamische kleurinstellingen */
+        @for $i from 1 through 144 {
+            $hue: (300 / 144) * $i;
+            .c:nth-child(#{$i}) {
+                left: ($i - 1) * 0.69444%;
+                background-image: linear-gradient(to bottom, black, hsla($hue, 100%, 50%, 0.8));
+                animation-delay: random(144) * (4 / 144) * -1s;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <script>
+            for (let i = 0; i < 144; i++) {
+                let div = document.createElement("div");
+                div.classList.add("c");
+                document.querySelector(".wrap").appendChild(div);
+            }
+        </script>
+    </div>
+    <div>Emotie Test Prototype</div>
+    <button id="start" type="button" onclick="init()">Start</button>
+    <button id="testpage" onclick="window.location.href='index.html'">terug</button>
+    <div id="webcam-container"></div>
+    <div id="label-container"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    <script type="text/javascript">
+        const URL = "./tm-my-image-model/";
+        let model, webcam, labelContainer, maxPredictions;
+
+        async function init() {
+            const modelURL = URL + "model.json";
+            const metadataURL = URL + "metadata.json";
+
+            model = await tmImage.load(modelURL, metadataURL);
+            maxPredictions = model.getTotalClasses();
+
+            const flip = true;
+            webcam = new tmImage.Webcam(200, 200, flip);
+            await webcam.setup();
+            await webcam.play();
+            window.requestAnimationFrame(loop);
+
+            document.getElementById("webcam-container").appendChild(webcam.canvas);
+            labelContainer = document.getElementById("label-container");
+            
+            for (let i = 0; i < maxPredictions; i++) {
+                labelContainer.appendChild(document.createElement("div"));
+            }
+        }
+
+        async function loop() {
+            webcam.update();
+            await predict();
+            window.requestAnimationFrame(loop);
+        }
+
+        async function predict() {
+            const prediction = await model.predict(webcam.canvas);
+            let probabilities = prediction.map(p => p.probability);
+            
+            for (let i = 0; i < maxPredictions; i++) {
+                labelContainer.childNodes[i].innerHTML =
+                    prediction[i].className + ": " + probabilities[i].toFixed(2);
+            }
+        }
+    </script>
+</body>
+
+</html>
+
+
+
+
