@@ -66,6 +66,12 @@
             right: 10px;
         }
 
+        #toggle-webcam {
+            position: absolute; 
+            top: 10px;
+            right: 130px;
+        }
+
         #webcam-container {
             position: absolute;
             top: 10px;
@@ -92,6 +98,7 @@
     <div>Emotie Test Prototype</div>
     <button id="start" type="button" onclick="init()">Start</button>
     <button id="testpage" onclick="window.location.href='test.html'">Ga naar Test</button>
+    <button id="toggle-webcam" onclick="toggleVisibility()">Toon/Verberg Webcam</button>
     <div id="webcam-container"></div>
     <div id="label-container"></div>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
@@ -134,13 +141,13 @@
             let maxProb = Math.max(...probabilities);
             let index = probabilities.indexOf(maxProb);
 
-            if (index === 0) { // Blij
+            if (index === 0) {
                 gradient.style.animationDuration = "60s";
                 gradient.style.backgroundImage = "linear-gradient(hsl(120, 84%, 60%), hsl(164, 79%, 71%))";
-            } else if (index === 1) { // Boos
+            } else if (index === 1) {
                 gradient.style.animationDuration = "10s";
                 gradient.style.backgroundImage = "linear-gradient(hsl(0, 84%, 60%), hsl(10, 79%, 71%))";
-            } else if (index === 2) { // Verdrietig
+            } else if (index === 2) {
                 gradient.style.animationDuration = "10s";
                 gradient.style.backgroundImage = "linear-gradient(hsl(220, 84%, 60%), hsl(240, 79%, 71%))";
             }
@@ -150,10 +157,16 @@
                     prediction[i].className + ": " + probabilities[i].toFixed(2);
             }
         }
+
+        function toggleVisibility() {
+            let webcamContainer = document.getElementById("webcam-container");
+            let labelContainer = document.getElementById("label-container");
+            let isVisible = webcamContainer.style.display !== "none";
+            
+            webcamContainer.style.display = isVisible ? "none" : "block";
+            labelContainer.style.display = isVisible ? "none" : "block";
+        }
     </script>
 </body>
 
 </html>
-
-
-
