@@ -9,7 +9,7 @@
         body {
             background-color: black;
             color: white;
-            font-size: 2em;
+            font-size: 1.5em;
             position: absolute;
             inset: 0;
             display: flex;
@@ -29,7 +29,7 @@
         }
 
         .gradient {
-            --size: 750px;
+            --size: 500px;
             --speed: 50s;
             --easing: cubic-bezier(0.8, 0.2, 0.2, 0.8);
 
@@ -47,7 +47,7 @@
 
         @media (max-width: 720px) {
             .gradient {
-                --size: 400px;
+                --size: 300px;
             }
         }
 
@@ -62,10 +62,16 @@
             flex-direction: column;
             gap: 10px;
             align-items: center;
+            width: 100%;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 10px;
         }
 
         button {
-            font-size: 1em;
+            font-size: 0.8em;
             background-color: black;
             color: white;
             padding: 0.5em 1em;
@@ -84,8 +90,10 @@
     <div class="controls">
         <div>Emotie Test Prototype</div>
         <button id="start" type="button" onclick="init()">Start</button>
-        <button id="testpage" onclick="window.location.href='test.html'">Ga naar Test</button>
-        <button id="toggle-webcam" onclick="toggleVisibility()">Toon/Verberg Webcam</button>
+        <div class="button-container">
+            <button id="testpage" onclick="window.location.href='test.html'">Ga naar Test</button>
+            <button id="toggle-webcam" onclick="toggleVisibility()">Toon/Verberg Webcam</button>
+        </div>
     </div>
     <div id="webcam-container"></div>
     <div id="label-container"></div>
