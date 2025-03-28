@@ -13,7 +13,8 @@
             position: absolute;
             inset: 0;
             display: flex;
-            place-content: center;
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
             overflow: hidden;
         }
@@ -38,11 +39,15 @@
             background-image: linear-gradient(hsl(222, 84%, 60%), hsl(164, 79%, 71%));
             animation: rotate var(--speed) var(--easing) alternate infinite;
             border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
-        @media (min-width: 720px) {
+        @media (max-width: 720px) {
             .gradient {
-                --size: 500px;
+                --size: 400px;
             }
         }
 
@@ -50,55 +55,38 @@
             transition: all 0.5s ease-out;
         }
 
-        #start {
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+
+        button {
             font-size: 1em;
             background-color: black;
             color: white;
             padding: 0.5em 1em;
             border-radius: 10%;
-            position: relative;
             z-index: 10;
         }
 
-        #testpage {
-            position: absolute; 
-            top: 10px; 
-            right: 10px;
-        }
-
-        #toggle-webcam {
-            position: absolute; 
-            top: 10px;
-            right: 130px;
-        }
-
-        #webcam-container {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            width: 200px;
-            height: 200px;
-            z-index: 10;
-        }
-
-        #label-container {
-            position: absolute;
-            top: 220px;
-            left: 10px;
-            width: 200px;
-            text-align: left;
-            font-size: 1em;
-            z-index: 10;
+        #webcam-container, #label-container {
+            display: none;
         }
     </style>
 </head>
 
 <body>
     <div class="gradient"></div>
-    <div>Emotie Test Prototype</div>
-    <button id="start" type="button" onclick="init()">Start</button>
-    <button id="testpage" onclick="window.location.href='test.html'">Ga naar Test</button>
-    <button id="toggle-webcam" onclick="toggleVisibility()">Toon/Verberg Webcam</button>
+    <div class="controls">
+        <div>Emotie Test Prototype</div>
+        <button id="start" type="button" onclick="init()">Start</button>
+        <button id="testpage" onclick="window.location.href='test.html'">Ga naar Test</button>
+        <button id="toggle-webcam" onclick="toggleVisibility()">Toon/Verberg Webcam</button>
+    </div>
     <div id="webcam-container"></div>
     <div id="label-container"></div>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
@@ -170,3 +158,4 @@
 </body>
 
 </html>
+
